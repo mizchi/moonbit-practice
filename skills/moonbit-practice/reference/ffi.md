@@ -2,9 +2,9 @@
 title: "MoonBit FFI Reference"
 ---
 
-# MoonBit FFI リファレンス
+# MoonBit FFI Reference
 
-## 外部型の宣言
+## External Type Declaration
 
 ```moonbit
 #external
@@ -15,41 +15,41 @@ type ExternalRef
 - JS: `any`
 - C: `void*`
 
-## 外部関数の宣言
+## External Function Declaration
 
-### JavaScript バックエンド
+### JavaScript Backend
 
 ```moonbit
-///| モジュール.関数 形式
+///| Module.function format
 fn cos(d : Double) -> Double = "Math" "cos"
 
-///| インライン JavaScript
+///| Inline JavaScript
 extern "js" fn cos(d : Double) -> Double =
   #|(d) => Math.cos(d)
 
-///| 複数行
+///| Multi-line
 extern "js" fn fetch_json(url : String) -> Value =
   #|(url) => fetch(url).then(r => r.json())
 ```
 
-### Wasm バックエンド
+### Wasm Backend
 
 ```moonbit
-///| ホストからインポート
+///| Import from host
 fn cos(d : Double) -> Double = "math" "cos"
 
-///| インライン Wasm
+///| Inline Wasm
 extern "wasm" fn identity(d : Double) -> Double =
   #|(func (param f64) (result f64))
 ```
 
-### C バックエンド
+### C Backend
 
 ```moonbit
 extern "C" fn put_char(ch : UInt) = "putchar"
 ```
 
-## 型マッピング
+## Type Mapping
 
 ### JavaScript
 
@@ -73,9 +73,9 @@ extern "C" fn put_char(ch : UInt) = "putchar"
 | `Double` | `f64` |
 | `#external type` | `externref` |
 
-## JavaScript FFI パターン
+## JavaScript FFI Patterns
 
-### undefined/null の扱い
+### Handling undefined/null
 
 ```moonbit
 #external
@@ -87,14 +87,14 @@ extern "js" fn Value::is_undefined(self : Value) -> Bool =
   #|(n) => Object.is(n, undefined)
 ```
 
-### 型キャスト（%identity）
+### Type Cast (%identity)
 
 ```moonbit
 fn[T] Value::cast_from(value : T) -> Value = "%identity"
 fn[T] Value::cast(self : Value) -> T = "%identity"
 ```
 
-### エラーハンドリング
+### Error Handling
 
 ```moonbit
 extern "js" fn wrap_ffi(
@@ -108,17 +108,17 @@ extern "js" fn wrap_ffi(
   #|}
 ```
 
-### Node.js モジュールの読み込み
+### Loading Node.js Modules
 
 ```moonbit
 extern "js" fn require_ffi(path : String) -> Value =
   #|(path) => require(path)
 
-// 使用例
+// Usage
 let path_module = require_ffi("node:path")
 ```
 
-### #module による直接インポート（推奨）
+### Direct Import with #module (Recommended)
 
 ```moonbit
 #module("node:fs")
@@ -129,11 +129,11 @@ extern "js" fn basename(path : String) -> String = "basename"
 extern "js" fn dirname(path : String) -> String = "dirname"
 ```
 
-`#module` 属性を使うと、指定したモジュールから直接関数をインポートできる。
+The `#module` attribute allows direct import from the specified module.
 
-## 関数のエクスポート
+## Exporting Functions
 
-`moon.pkg.json` で設定:
+Configure in `moon.pkg.json`:
 
 ```json
 {
@@ -146,20 +146,20 @@ extern "js" fn dirname(path : String) -> String = "dirname"
 }
 ```
 
-## コールバック
+## Callbacks
 
-### FuncRef（クロージャなし）
+### FuncRef (No Closures)
 
 ```moonbit
-///| 自由変数を持たない関数のみ
+///| Only functions without free variables
 fn register(callback : FuncRef[() -> Unit]) -> Unit
 ```
 
-### 通常のクロージャ
+### Regular Closures
 
-JavaScript では自動的にクロージャとして扱われる。
+In JavaScript, closures are handled automatically.
 
-## 定数 enum のカスタマイズ
+## Custom Enum Values
 
 ```moonbit
 enum Flags {
@@ -169,9 +169,9 @@ enum Flags {
 }
 ```
 
-C ライブラリのフラグとの互換性に便利。
+Useful for compatibility with C library flags.
 
-## 参照
+## References
 
 - FFI: https://docs.moonbitlang.com/en/stable/language/ffi
 - JS FFI Guide: https://www.moonbitlang.com/pearls/moonbit-jsffi

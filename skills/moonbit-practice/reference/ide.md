@@ -124,15 +124,15 @@ The tool processes queries in this order:
 
 ### `moon ide peek-def`
 
-インラインで定義を表示。grep より正確（セマンティック検索）。
+Display definitions inline. More accurate than grep (semantic search).
 
 ```bash
-# トップレベルシンボルの定義
+# Top-level symbol definition
 $ moon ide peek-def String::rev
 Found 1 symbols matching 'String::rev':
 `pub fn String::rev` in package moonbitlang/core/builtin at .../string_methods.mbt:1039-1044
 
-# 位置を指定してローカルシンボルの定義
+# Local symbol definition with location
 $ moon ide peek-def Parser -loc src/parse.mbt:46:4
 Definition found at file src/parse.mbt
   | ///|
@@ -145,10 +145,10 @@ Definition found at file src/parse.mbt
 
 ### `moon ide outline`
 
-パッケージまたはファイルのトップレベルシンボル一覧。
+List top-level symbols in a package or file.
 
 ```bash
-# ディレクトリ（パッケージ）のアウトライン
+# Directory (package) outline
 $ moon ide outline .
 spec.mbt:
  L003 | pub(all) enum CStandard {
@@ -156,13 +156,13 @@ spec.mbt:
  L013 | pub(all) struct Position {
        ...
 
-# 単一ファイルのアウトライン
+# Single file outline
 $ moon ide outline parser.mbt
 ```
 
 ### `moon ide find-references`
 
-シンボルの全参照箇所を検索。
+Find all references to a symbol.
 
 ```bash
 $ moon ide find-references TranslationUnit
@@ -170,21 +170,21 @@ $ moon ide find-references TranslationUnit
 
 ## `moon doc` for API Discovery
 
-**CRITICAL**: `moon doc '<query>'` は API 発見の主要ツール。grep より高速で正確。
+**CRITICAL**: `moon doc '<query>'` is the primary tool for API discovery. Faster and more accurate than grep.
 
 ```bash
-# 空クエリ: 利用可能なパッケージ一覧
+# Empty query: list available packages
 moon doc ''
 
-# 型のメソッド一覧
+# List type methods
 moon doc "String"
 
-# パッケージ内のシンボル一覧
+# List symbols in a package
 moon doc "@buffer"
 
-# 特定関数の詳細
+# Specific function details
 moon doc "@buffer.new"
 
-# グロブパターン
+# Glob pattern
 moon doc "String::*rev*"
 ```

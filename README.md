@@ -1,29 +1,29 @@
 # MoonBit Practice Plugin
 
-MoonBit コード生成のベストプラクティスを提供する Claude Code プラグインです。
+A Claude Code plugin providing best practices for MoonBit code generation.
 
-## インストール
+## Installation
 
 ```bash
 claude plugin marketplace add mizchi/moonbit-practice
 claude plugin install moonbit-practice@moonbit-plugins
 ```
 
-## 使い方
+## Usage
 
 ```bash
 /moonbit-practice
 ```
 
-## 含まれるリファレンス
+## Included References
 
-- **ide.md**: `moon ide` を使ったコードナビゲーション
-- **ffi.md**: MoonBit FFI リファレンス
-- **refactor.md**: リファクタリングパターン
-- **configuration.md**: moon.mod.json / moon.pkg 設定
-- **agents.md**: プロジェクトレイアウトと開発ワークフロー
+- **ide.md**: Code navigation with `moon ide`
+- **ffi.md**: MoonBit FFI reference
+- **refactor.md**: Refactoring patterns
+- **configuration.md**: moon.mod.json / moon.pkg configuration
+- **agents.md**: Project layout and development workflow
 
-## ディレクトリ構造
+## Directory Structure
 
 ```
 moonbit-practice/

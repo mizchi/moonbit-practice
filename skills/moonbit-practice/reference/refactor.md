@@ -2,9 +2,9 @@
 title: "MoonBit Refactoring Patterns"
 ---
 
-# MoonBit リファクタリングパターン
+# MoonBit Refactoring Patterns
 
-## 何もしない処理を含む二分岐では match if のパターンマッチを優先する
+## Prefer match-if Pattern for Two-way Branches with No-op
 
 ```moonbit
 let opt : Int? = Some(1)
@@ -23,13 +23,13 @@ if opt is Some(v) {
 }
 ```
 
-## guard によるアーリーリターンを優先する
+## Prefer guard for Early Returns
 
-条件を満たさない場合に早期に抜ける場合は `guard` を使う。
+Use `guard` when you want to exit early if a condition is not met.
 
 ```moonbit
 ///|
-/// BAD: ネストが深くなる
+/// BAD: Deep nesting
 fn get_value(array : Array[Int], index : Int) -> Int? {
   if index >= 0 && index < array.length() {
     Some(array[index])
@@ -39,18 +39,18 @@ fn get_value(array : Array[Int], index : Int) -> Int? {
 }
 
 ///|
-/// Good: guard でアーリーリターン
+/// Good: Early return with guard
 fn get_value(array : Array[Int], index : Int) -> Int? {
   guard index >= 0 && index < array.length() else { None }
   Some(array[index])
 }
 ```
 
-パターンマッチと組み合わせる:
+Combine with pattern matching:
 
 ```moonbit
 ///|
-/// BAD: match でネストが深くなる
+/// BAD: Deep nesting with match
 fn process(resources : Map[String, Resource], path : String) -> String raise Error {
   match resources.get(path) {
     Some(resource) => {
@@ -64,7 +64,7 @@ fn process(resources : Map[String, Resource], path : String) -> String raise Err
 }
 
 ///|
-/// Good: guard is でフラットに
+/// Good: Flatten with guard is
 fn process(resources : Map[String, Resource], path : String) -> String raise Error {
   guard resources.get(path) is Some(resource) else { fail("\{path} not found") }
   guard resource is PlainText(text) else { fail("\{path} is not plain text") }
@@ -72,23 +72,23 @@ fn process(resources : Map[String, Resource], path : String) -> String raise Err
 }
 ```
 
-## 文字列操作のパフォーマンスを優先する際は StringView を使う
+## Prefer StringView for String Performance
 
 ```moonbit
 ///|
-/// BAD: String の連結は毎回新しい文字列を生成する
+/// BAD: String concatenation creates new strings each time
 fn process_string(s : String) -> String {
   ...
 }
 
 ///|
-/// Good: StringView を使うとコピーを避けられる
+/// Good: StringView avoids copying
 fn process_string_view(s : StringView) -> Unit {
   ...
 }
 ```
 
-## C-style for より for-in を優先する
+## Prefer for-in over C-style for
 
 ```moonbit
 ///|
@@ -104,31 +104,31 @@ for item in items {
 }
 
 ///|
-/// Good: インデックスが必要な場合
+/// Good: When index is needed
 for i, item in items {
   println("\{i}: \{item}")
 }
 ```
 
-## 単一式の関数はアロー関数を優先する
+## Prefer Arrow Functions for Single Expressions
 
 ```moonbit
 ///|
-/// BAD: 冗長
+/// BAD: Verbose
 let f = fn(x) { x + 1 }
 arr.map(fn(x) { x * 2 })
 
 ///|
-/// Good: アロー関数
+/// Good: Arrow function
 let f = fn { x => x + 1 }
 arr.map(fn { x => x * 2 })
 ```
 
-## for ループで値を返す場合は else を使う
+## Use else with for Loops to Return Values
 
 ```moonbit
 ///|
-/// BAD: 変数を使って結果を保持
+/// BAD: Using variable to hold result
 fn find_first(arr : Array[Int], target : Int) -> Int? {
   let mut result : Int? = None
   for i in arr {
@@ -141,7 +141,7 @@ fn find_first(arr : Array[Int], target : Int) -> Int? {
 }
 
 ///|
-/// Good: for-else で直接返す
+/// Good: Return directly with for-else
 fn find_first(arr : Array[Int], target : Int) -> Int? {
   for i in arr {
     if i == target {

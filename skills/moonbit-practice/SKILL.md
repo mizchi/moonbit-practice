@@ -5,86 +5,86 @@ description: MoonBit code generation best practices. Use when writing MoonBit co
 
 # MoonBit Practice Guide
 
-AI が MoonBit コードを生成する際のベストプラクティス。
-ここにある内容がわからなかった時 `moonbit-docs` スキルを使って公式ドキュメントを検索する
+Best practices for AI when generating MoonBit code.
+If you don't understand something here, use `moonbit-docs` skill to search the official documentation.
 
-## やってほしいこと
+## Guidelines
 
-### コードナビゲーション: Read/Grep より moon ide を優先
+### Code Navigation: Prefer moon ide over Read/Grep
 
-MoonBit プロジェクトでは **Read ツールや grep より `moon ide` コマンドを優先** すること。
+In MoonBit projects, **prefer `moon ide` commands over Read tool or grep**.
 
 ```bash
-# ❌ 避ける: ファイルを直接読む
+# ❌ Avoid: Reading files directly
 Read src/parser.mbt
 
-# ✅ 推奨: シンボルから定義を探す
+# ✅ Recommended: Find definitions from symbols
 moon ide peek-def Parser::parse
 moon ide goto-definition -tags 'pub fn' -query 'parse'
 
-# ❌ 避ける: grep で検索
+# ❌ Avoid: Searching with grep
 grep -r "fn parse" .
 
-# ✅ 推奨: セマンティック検索
+# ✅ Recommended: Semantic search
 moon ide find-references parse
 moon ide outline src/parser.mbt
 ```
 
-**理由:**
-- `moon ide` はセマンティック検索（定義とコールサイトを区別）
-- grep はコメントや文字列も拾う
-- `moon doc` で API を素早く把握できる
+**Why:**
+- `moon ide` provides semantic search (distinguishes definitions from call sites)
+- grep picks up comments and strings
+- `moon doc` quickly reveals APIs
 
-### その他のルール
+### Other Rules
 
-- `moon doc '<Type>'` で API を調べてから実装する
-- moon.pkg.json / moon.mod.json を編集する前に reference/configuration.md を確認
-- CLAUDE.md を更新するときは reference/agents.md を確認
+- Use `moon doc '<Type>'` to explore APIs before implementing
+- Check reference/configuration.md before editing moon.pkg.json / moon.mod.json
+- Check reference/agents.md when updating CLAUDE.md
 
-## Common Pitfalls（よくあるミス）
+## Common Pitfalls
 
-- **変数・関数名に大文字を使わない** - コンパイルエラー
-- **`mut` はフィールド変更ではなく再代入時のみ** - Array の push には不要
-- **`return` は不要** - 最後の式が戻り値
-- **メソッドには `Type::` プレフィックス必須**
-- **`++` `--` は非対応** - `i = i + 1` または `i += 1`
-- **エラー伝播に `try` 不要** - 自動伝播（Swift と異なる）
-- **`await` キーワードなし** - async 関数は `async fn` で宣言するだけ
-- **C-style for より range for を優先** - `for i in 0..<n {...}`
-- **レガシー構文**: `function_name!(...)` や `function_name(...)?` は非推奨
+- **Don't use uppercase for variables/functions** - compilation error
+- **`mut` is only for reassignment, not field mutation** - Array push doesn't need it
+- **`return` is unnecessary** - last expression is the return value
+- **Methods require `Type::` prefix**
+- **`++` `--` not supported** - use `i = i + 1` or `i += 1`
+- **No `try` needed for error propagation** - automatic (unlike Swift)
+- **No `await` keyword** - just declare with `async fn`
+- **Prefer range for over C-style** - `for i in 0..<n {...}`
+- **Legacy syntax**: `function_name!(...)` and `function_name(...)?` are deprecated
 
-## AI がよく間違える文法
+## Common Syntax Mistakes by AI
 
-### 型引数の位置
+### Type Parameter Position
 
 ```moonbit
-///| NG: fn identity[T] は古い構文
+///| NG: fn identity[T] is old syntax
 fn identity[T](val: T) -> T { val }
 
-///| OK: 型引数は fn の直後
+///| OK: Type parameter comes right after fn
 fn[T] identity(val: T) -> T { val }
 ```
 
-### raise 構文
+### raise Syntax
 
 ```moonbit
 ///|
-/// NG: -> T!Error は削除された
+/// NG: -> T!Error was removed
 fn parse(s: String) -> Int!Error { ... }
 
 ///|
-/// OK: raise キーワードを使う
+/// OK: Use raise keyword
 fn parse(s: String) -> Int raise Error { ... }
 ```
 
-`Int raise` と省略すると、`Int raise Error` になる。
-async fn ではデフォルトで `raise` 相当になり `noraise` を使う場合、エラーが発生しないことを強制する。`try~catch` を強制する。
+`Int raise` is shorthand for `Int raise Error`.
+async fn implicitly raises by default; use `noraise` to enforce no errors.
 
-### マクロ呼び出し
+### Macro Calls
 
 ```moonbit
 ///|
-/// NG: ! 付きは削除された
+/// NG: ! suffix was removed
 assert_true!(true)
 
 ///|
@@ -92,7 +92,7 @@ assert_true!(true)
 assert_true(true)
 ```
 
-### 複数行テキスト
+### Multi-line Text
 
 ```moonbit
 let text =
@@ -100,33 +100,33 @@ let text =
   #|line 2
 ```
 
-### コメントと分割ブロック
+### Comments and Block Separators
 
-`///|` は分割ブロック。`///` コメントは直下の `///|` ブロックに紐づく。
+`///|` is a block separator. `///` comments attach to the following `///|` block.
 
 ```moonbit
 ///|
-/// この関数は foo です
+/// This function is foo
 fn foo() -> Unit { ... }
 
 ///|
-/// この関数は bar です
+/// This function is bar
 fn bar() -> Unit { ... }
 ```
 
-ファイル冒頭に `///|` を連続して書くと別ブロックとして分割されるので避ける。
+Avoid consecutive `///|` at the file beginning as they create separate blocks.
 
-## スナップショットテスト
+## Snapshot Tests
 
-`moon test -u` で `inspect(val)` の `content=""` が自動更新される。
+`moon test -u` auto-updates `content=""` in `inspect(val)`.
 
 ```moonbit
 test "snapshot" {
-  inspect([1, 2, 3], content="")  // moon test -u で自動補完
+  inspect([1, 2, 3], content="")  // auto-filled by moon test -u
 }
 ```
 
-実行後:
+After running:
 
 ```moonbit
 test "snapshot" {
@@ -134,22 +134,22 @@ test "snapshot" {
 }
 ```
 
-## Doc Test
+## Doc Tests
 
-`.mbt.md` ファイルまたは `///|` インラインコメント内で使用可能。
+Available in `.mbt.md` files or `///|` inline comments.
 
-| コードブロック | 動作 |
-|---------------|------|
-| ` ```mbt check ` | LSP で検査される |
-| ` ```mbt test ` | `test {...}` 相当として実行 |
-| ` ```moonbit ` | 何も実行されない（表示のみ） |
+| Code Block | Behavior |
+|------------|----------|
+| ` ```mbt check ` | Checked by LSP |
+| ` ```mbt test ` | Executed as `test {...}` |
+| ` ```moonbit ` | Display only (not executed) |
 
-例（インラインコメント）:
+Example (inline comment):
 
 ```moonbit
 
 ///|
-/// 整数を1増やす
+/// Increment an integer by 1
 /// ```mbt test
 /// inspect(incr(41), content="42")
 /// ```
@@ -158,94 +158,94 @@ pub fn incr(x : Int) -> Int {
 }
 ```
 
-## リリース前の準備
+## Pre-release Checklist
 
-リリース前に以下を実行:
-
-```bash
-moon fmt   # コードフォーマット
-moon info  # 型定義ファイル生成
-```
-
-`pkg.generated.mbti` は型定義ファイルであり、`moon info` で自動生成される。これを直接編集しない。
-
-## ビルトイン型のメソッドを調べる
+Run before releasing:
 
 ```bash
-moon doc StringView   # StringView のメソッド一覧
-moon doc Array        # Array のメソッド一覧
-moon doc Map          # Map のメソッド一覧
+moon fmt   # Format code
+moon info  # Generate type definition files
 ```
 
-## クイックリファレンス
+`pkg.generated.mbti` is auto-generated by `moon info`. Don't edit it directly.
 
-| トピック | コマンド | 詳細 |
-|---------|---------|------|
-| テスト | `moon test` | https://docs.moonbitlang.com/en/stable/language/tests |
-| スナップショット更新 | `moon test -u` | 同上 |
-| フィルタ付きテスト | `moon test --filter 'glob'` | 特定テストのみ実行 |
-| ベンチマーク | `moon bench` | https://docs.moonbitlang.com/en/stable/language/benchmarks |
+## Exploring Built-in Type Methods
+
+```bash
+moon doc StringView   # StringView methods
+moon doc Array        # Array methods
+moon doc Map          # Map methods
+```
+
+## Quick Reference
+
+| Topic | Command | Details |
+|-------|---------|---------|
+| Test | `moon test` | https://docs.moonbitlang.com/en/stable/language/tests |
+| Update snapshots | `moon test -u` | Same as above |
+| Filtered test | `moon test --filter 'glob'` | Run specific tests |
+| Benchmark | `moon bench` | https://docs.moonbitlang.com/en/stable/language/benchmarks |
 | Doc Test | `moon check` / `moon test` | https://docs.moonbitlang.com/en/stable/language/docs |
-| フォーマット | `moon fmt` | - |
-| 型定義生成 | `moon info` | - |
-| ドキュメント参照 | `moon doc <Type>` | - |
+| Format | `moon fmt` | - |
+| Generate types | `moon info` | - |
+| Doc reference | `moon doc <Type>` | - |
 
-## moon ide ツール
+## moon ide Tools
 
-grep より正確なコードナビゲーション。詳細は `reference/ide.md` 参照。
+More accurate than grep for code navigation. See `reference/ide.md` for details.
 
 ```bash
-# シンボル定義を表示
+# Show symbol definition
 moon ide peek-def Parser::read_u32_leb128
 
-# パッケージのアウトライン
+# Package outline
 moon ide outline .
 
-# 参照箇所を検索
+# Find references
 moon ide find-references TranslationUnit
 
-# 型定義にジャンプ（位置指定）
+# Jump to type definition (with location)
 moon ide peek-def Parser -loc src/parse.mbt:46:4
 ```
 
 ## Functional for loop
 
-可能な限り functional for loop を使う。読みやすく、推論しやすい。
+Prefer functional for loops whenever possible. More readable and easier to reason about.
 
 ```moonbit
-// 状態を持つ functional for loop
+// Functional for loop with state
 for i = 0, sum = 0; i <= 10; {
-  continue i + 1, sum + i  // 状態の更新
+  continue i + 1, sum + i  // Update state
 } else {
-  sum  // ループ終了時の値
+  sum  // Value at loop exit
 }
 
-// range for（推奨）
+// Range for (recommended)
 for i in 0..<n { ... }
-for i, v in array { ... }  // index と value
+for i, v in array { ... }  // index and value
 ```
 
 ## Error Handling
 
-MoonBit は checked errors を使用。詳細は `reference/ffi.md` 参照。
+MoonBit uses checked errors. See `reference/ffi.md` for details.
 
 ```moonbit
-///| エラー型の宣言
+///| Declare error type
 suberror ParseError {
   InvalidEof
   InvalidChar(Char)
 }
 
-///| raise で宣言、自動伝播
+///| Declare with raise, auto-propagates
 fn parse(s: String) -> Int raise ParseError {
   if s.is_empty() { raise ParseError::InvalidEof }
   ...
 }
 
-///| Result に変換
+///| Convert to Result
 let result : Result[Int, ParseError] = try? parse(s)
 
-///| try-catch で処理
+///| Handle with try-catch
 parse(s) catch {
   ParseError::InvalidEof => -1
   _ => 0
@@ -254,4 +254,4 @@ parse(s) catch {
 
 ## Assets
 
-assets/ci.yaml は CI 用の GitHub Actions ワークフロー定義
+assets/ci.yaml is a GitHub Actions workflow for CI

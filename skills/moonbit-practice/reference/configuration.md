@@ -2,53 +2,53 @@
 title: "MoonBit Configuration Reference"
 ---
 
-# MoonBit 設定リファレンス
+# MoonBit Configuration Reference
 
-## ファイル構造
+## File Structure
 
 ```
 my-project/
-├── moon.mod.json    # モジュール設定（プロジェクト全体）
+├── moon.mod.json    # Module configuration (project-wide)
 └── src/
-    ├── moon.pkg       # パッケージ設定（新形式）
+    ├── moon.pkg       # Package configuration (new format)
     └── main.mbt
 ```
 
-## moon.pkg.json から moon.pkg への移行
+## Migrating from moon.pkg.json to moon.pkg
 
-`moon.pkg.json` は独自構文の `moon.pkg` に移行中。以下のコマンドで変換できる：
+`moon.pkg.json` is being migrated to the custom syntax `moon.pkg`. Convert with:
 
 ```bash
 NEW_MOON_PKG=1 moon fmt
 ```
 
-これにより `moon.pkg.json` が `moon.pkg` に変換される。
+This converts `moon.pkg.json` to `moon.pkg`.
 
-## moon.pkg（新形式）
+## moon.pkg (New Format)
 
-JSON に比べてコメント対応、末尾カンマ許可、より簡潔な構文が特徴。
+Compared to JSON: supports comments, trailing commas, and more concise syntax.
 
-### インポート
+### Imports
 
 ```moonbit
-// 基本インポート
+// Basic import
 import {
   "moonbitlang/async/io",
   "path/to/pkg" as @alias,
 }
 
-// テスト用インポート
+// Test imports
 import "test" {
   "path/to/pkg5",
 }
 
-// ホワイトボックステスト用インポート
+// White-box test imports
 import "wbtest" {
   "path/to/pkg7",
 }
 ```
 
-### オプション設定
+### Options
 
 ```moonbit
 options(
@@ -58,17 +58,17 @@ options(
 )
 ```
 
-### JSON との比較
+### Comparison with JSON
 
-| 項目 | JSON 形式 | moon.pkg 形式 |
-|------|-----------|---------------|
-| コメント | ❌ 非対応 | ✅ 対応 |
-| 末尾カンマ | ❌ 非対応 | ✅ 対応 |
-| 可読性 | 低（冗長） | 高（簡潔） |
+| Feature | JSON Format | moon.pkg Format |
+|---------|-------------|-----------------|
+| Comments | ❌ Not supported | ✅ Supported |
+| Trailing comma | ❌ Not supported | ✅ Supported |
+| Readability | Low (verbose) | High (concise) |
 
-## moon.mod.json（モジュール設定）
+## moon.mod.json (Module Configuration)
 
-### 必須フィールド
+### Required Fields
 
 ```json
 {
@@ -77,7 +77,7 @@ options(
 }
 ```
 
-### 依存関係
+### Dependencies
 
 ```json
 {
@@ -88,7 +88,7 @@ options(
 }
 ```
 
-### メタ情報
+### Metadata
 
 ```json
 {
@@ -99,7 +99,7 @@ options(
 }
 ```
 
-### ソースディレクトリ
+### Source Directory
 
 ```json
 {
@@ -107,7 +107,7 @@ options(
 }
 ```
 
-### ターゲット指定
+### Target Specification
 
 ```json
 {
@@ -115,7 +115,7 @@ options(
 }
 ```
 
-### 警告設定
+### Warning Configuration
 
 ```json
 {
@@ -124,9 +124,9 @@ options(
 }
 ```
 
-## moon.pkg.json（パッケージ設定）
+## moon.pkg.json (Package Configuration)
 
-### メインパッケージ
+### Main Package
 
 ```json
 {
@@ -134,7 +134,7 @@ options(
 }
 ```
 
-### 依存関係
+### Dependencies
 
 ```json
 {
@@ -147,7 +147,7 @@ options(
 }
 ```
 
-### 条件付きコンパイル
+### Conditional Compilation
 
 ```json
 {
@@ -161,12 +161,12 @@ options(
 }
 ```
 
-条件: `wasm`, `wasm-gc`, `js`, `debug`, `release`
-演算子: `and`, `or`, `not`
+Conditions: `wasm`, `wasm-gc`, `js`, `debug`, `release`
+Operators: `and`, `or`, `not`
 
-### リンクオプション
+### Link Options
 
-#### JS バックエンド
+#### JS Backend
 
 ```json
 {
@@ -179,9 +179,9 @@ options(
 }
 ```
 
-format: `esm`（デフォルト）, `cjs`, `iife`
+format: `esm` (default), `cjs`, `iife`
 
-#### Wasm バックエンド
+#### Wasm Backend
 
 ```json
 {
@@ -194,7 +194,7 @@ format: `esm`（デフォルト）, `cjs`, `iife`
 }
 ```
 
-### Pre-build（ビルド前処理）
+### Pre-build
 
 ```json
 {
@@ -208,20 +208,20 @@ format: `esm`（デフォルト）, `cjs`, `iife`
 }
 ```
 
-`:embed` でファイルを MoonBit ソースに変換（`--text` または `--binary`）
+`:embed` converts files to MoonBit source (`--text` or `--binary`)
 
-## 警告番号一覧
+## Warning Numbers
 
-よく使うもの:
+Common ones:
 - `1` Unused function
 - `2` Unused variable
 - `11` Partial pattern matching
 - `12` Unreachable code
 - `27` Deprecated syntax
 
-確認: `moonc build-package -warn-help`
+Check all: `moonc build-package -warn-help`
 
-## 参照
+## References
 
 - Module: https://docs.moonbitlang.com/en/stable/toolchain/moon/module
 - Package: https://docs.moonbitlang.com/en/stable/toolchain/moon/package
