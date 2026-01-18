@@ -1,3 +1,8 @@
+---
+name: moonbit-practice
+description: MoonBit code generation best practices. Use when writing MoonBit code to avoid common AI mistakes with syntax, tests, and benchmarks.
+---
+
 # MoonBit Practice Guide
 
 AI が MoonBit コードを生成する際のベストプラクティス。
@@ -6,8 +11,8 @@ AI が MoonBit コードを生成する際のベストプラクティス。
 ## やってほしいこと
 
 - grep の前に `moon ide goto-definition -tags 'pub fn' -query 'maximum'` を積極的に使って型を追跡する
-- moon.pkg.json moon.mod.json の設定を書き換える前に references/configuration.md を確認する
-- Moonbit に関する CLAUDE.md を更新するときは `references/agents.md` を確認すること
+- moon.pkg.json moon.mod.json の設定を書き換える前に reference/configuration.md を確認する
+- Moonbit に関する CLAUDE.md を更新するときは `reference/agents.md` を確認すること
 
 ## AI がよく間違える文法
 

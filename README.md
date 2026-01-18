@@ -20,7 +20,7 @@ claude plugin install moonbit-practice@moonbit-plugins
 - **ide.md**: `moon ide` を使ったコードナビゲーション
 - **ffi.md**: MoonBit FFI リファレンス
 - **refactor.md**: リファクタリングパターン
-- **configuration.md**: moon.mod.json / moon.pkg.json 設定
+- **configuration.md**: moon.mod.json / moon.pkg 設定
 - **agents.md**: プロジェクトレイアウトと開発ワークフロー
 
 ## ディレクトリ構造
@@ -29,13 +29,10 @@ claude plugin install moonbit-practice@moonbit-plugins
 moonbit-practice-plugin/
 ├── .claude-plugin/
 │   └── marketplace.json
-├── plugins/
+├── skills/
 │   └── moonbit-practice/
-│       ├── .claude-plugin/
-│       │   └── plugin.json
-│       ├── commands/
-│       │   └── moonbit-practice.md
-│       ├── references/
+│       ├── SKILL.md
+│       ├── reference/
 │       │   ├── agents.md
 │       │   ├── configuration.md
 │       │   ├── ffi.md
