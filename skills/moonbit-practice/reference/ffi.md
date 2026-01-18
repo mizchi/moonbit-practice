@@ -118,7 +118,9 @@ extern "js" fn require_ffi(path : String) -> Value =
 let path_module = require_ffi("node:path")
 ```
 
-### Direct Import with #module (Recommended)
+### ESM Import with #module (Recommended)
+
+The `#module` attribute generates ESM `import` statements in the output JavaScript.
 
 ```moonbit
 #module("node:fs")
@@ -129,7 +131,44 @@ extern "js" fn basename(path : String) -> String = "basename"
 extern "js" fn dirname(path : String) -> String = "dirname"
 ```
 
-The `#module` attribute allows direct import from the specified module.
+This generates:
+
+```javascript
+import { readFileSync } from "node:fs";
+import { basename, dirname } from "node:path";
+```
+
+#### Default Export
+
+Use `default` as the function name to import the default export:
+
+```moonbit
+#module("lodash")
+extern "js" fn lodash() -> Value = "default"
+```
+
+Generates:
+
+```javascript
+import lodash from "lodash";
+```
+
+#### npm Packages
+
+Works with any npm package:
+
+```moonbit
+#module("zod")
+extern "js" fn z() -> Value = "z"
+
+#module("marked")
+extern "js" fn marked(input : String) -> String = "marked"
+```
+
+#### Requirements
+
+- Must use `"format": "esm"` in `moon.pkg.json` link config
+- Target must be JavaScript backend (`--target js`)
 
 ## Exporting Functions
 
