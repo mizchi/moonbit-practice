@@ -5,7 +5,7 @@ MoonBit コード生成のベストプラクティスを提供する Claude Code
 ## インストール
 
 ```bash
-claude plugin marketplace add mizchi/moonbit-practice-plugin
+claude plugin marketplace add mizchi/moonbit-practice
 claude plugin install moonbit-practice@moonbit-plugins
 ```
 
@@ -26,7 +26,7 @@ claude plugin install moonbit-practice@moonbit-plugins
 ## ディレクトリ構造
 
 ```
-moonbit-practice-plugin/
+moonbit-practice/
 ├── .claude-plugin/
 │   └── marketplace.json
 ├── skills/
