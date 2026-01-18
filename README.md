@@ -6,7 +6,7 @@ A Claude Code plugin providing best practices for MoonBit code generation.
 
 ```bash
 claude plugin marketplace add mizchi/moonbit-practice
-claude plugin install moonbit-practice@moonbit-plugins
+claude plugin install moonbit-practice@moonbit-practice
 ```
 
 ## Usage
