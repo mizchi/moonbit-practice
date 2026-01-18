@@ -317,6 +317,20 @@ Async/await support for MoonBit.
 moon add moonbitlang/async
 ```
 
+### Important: Import Required for async main/test
+
+To use `async fn main` or `async test`, you **must** import `moonbitlang/async` in your `moon.pkg.json`:
+
+```json
+{
+  "import": [
+    "moonbitlang/async"
+  ]
+}
+```
+
+Without this import, `async fn main` and `async test` will not work.
+
 ### Basic Usage
 
 ```moonbit
