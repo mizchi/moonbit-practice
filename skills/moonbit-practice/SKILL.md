@@ -190,6 +190,8 @@ moon doc Map          # Map methods
 | Format | `moon fmt` | - |
 | Generate types | `moon info` | - |
 | Doc reference | `moon doc <Type>` | - |
+| Workspace init | `moon work init` | See reference/configuration.md |
+| Workspace add | `moon work use mod1 mod2` | Add modules to workspace |
 
 ## moon ide Tools
 
@@ -261,4 +263,49 @@ parse(s) catch {
 
 ## Assets
 
-assets/ci.yaml is a GitHub Actions workflow for CI
+- assets/ci.yaml - GitHub Actions workflow for CI (curl installer)
+- assets/ci-nix.yaml - GitHub Actions workflow for CI with Nix (moonbit-overlay)
+
+### Nix Setup (moonbit-overlay)
+
+[moonbit-community/moonbit-overlay](https://github.com/moonbit-community/moonbit-overlay) provides a Nix flake overlay for reproducible MoonBit builds.
+
+Minimal `flake.nix` for a MoonBit project:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    moonbit-overlay.url = "github:moonbit-community/moonbit-overlay";
+    moon-registry = {
+      url = "git+https://mooncakes.io/git/index";
+      flake = false;
+    };
+  };
+
+  outputs = { nixpkgs, moonbit-overlay, moon-registry, ... }:
+    let
+      system = "x86_64-linux"; # or aarch64-darwin, etc.
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ moonbit-overlay.overlays.default ];
+      };
+      moonHome = pkgs.moonPlatform.bundleWithRegistry {
+        cachedRegistry = pkgs.moonPlatform.buildCachedRegistry {
+          moonModJson = ./moon.mod.json;
+          registryIndexSrc = moon-registry;
+        };
+      };
+    in {
+      devShells.${system}.default = pkgs.mkShellNoCC {
+        packages = [ moonHome pkgs.git ];
+        env.MOON_HOME = "${moonHome}";
+      };
+    };
+}
+```
+
+Key APIs from the overlay:
+- `pkgs.moonPlatform.buildMoonPackage` - Build a MoonBit package as a Nix derivation
+- `pkgs.moonPlatform.bundleWithRegistry` - Create a MOON_HOME with cached registry
+- `pkgs.moonPlatform.buildCachedRegistry` - Pre-fetch mooncakes registry dependencies
