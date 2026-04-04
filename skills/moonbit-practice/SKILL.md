@@ -53,6 +53,8 @@ moon ide outline src/parser.mbt
 - **Prefer range for over C-style** - `for i in 0..<n {...}`
 - **`nobreak` not `else`** for functional for-loop exit values (`else` is deprecated)
 - **Legacy syntax**: `function_name!(...)` and `function_name(...)?` are deprecated
+- **`for { ... }` is deprecated** - use `for ;; { ... }` or `while true { ... }` for infinite loops
+- **Cross-package `.` syntax for `impl` removed** - `.` method call only works within the same package
 
 ## Common Syntax Mistakes by AI
 
@@ -192,6 +194,7 @@ moon doc Map          # Map methods
 | Doc reference | `moon doc <Type>` | - |
 | Workspace init | `moon work init` | See reference/configuration.md |
 | Workspace add | `moon work use mod1 mod2` | Add modules to workspace |
+| API usage analysis | `moon ide analyze .` | Show public API usage stats |
 
 ## moon ide Tools
 
@@ -215,6 +218,10 @@ moon ide hover my_func --loc src/lib.mbt:10:4
 
 # Rename symbol across the project
 moon ide rename old_name new_name
+
+# Analyze public API usage (v0.8.3+)
+moon ide analyze .              # Current package
+moon ide analyze internal/*     # Glob pattern
 ```
 
 ## Functional for loop
@@ -223,7 +230,7 @@ Prefer functional for loops whenever possible. More readable and easier to reaso
 
 ```moonbit
 // Functional for loop with state
-for i = 0, sum = 0; i <= 10; {
+for i = 0, sum = 0; i <= 10 {
   continue i + 1, sum + i  // Update state
 } nobreak {
   sum  // Value at loop exit (nobreak, not else)
@@ -232,6 +239,29 @@ for i = 0, sum = 0; i <= 10; {
 // Range for (recommended)
 for i in 0..<n { ... }
 for i, v in array { ... }  // index and value
+
+// Range for with extra loop variable (v0.8.3+)
+for x in xs; sum = 0 {
+  continue sum + x
+} nobreak {
+  sum
+}
+
+// Infinite loop (for { } is deprecated)
+for ;; { ... }
+```
+
+## String Constants
+
+`const` supports string concatenation and interpolation (v0.8.3+):
+
+```moonbit
+const Hello : String = "Hello"
+const HelloWorld : String = Hello + " world"
+const Message : String =
+  $|========
+  $|\{HelloWorld}
+  $|========
 ```
 
 ## Error Handling

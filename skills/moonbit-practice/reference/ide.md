@@ -197,6 +197,20 @@ Find all references to a symbol.
 $ moon ide find-references TranslationUnit
 ```
 
+### `moon ide analyze`
+
+Display public APIs with usage statistics. Useful for finding unused exports (v0.8.3+).
+
+```bash
+# Analyze current package
+$ moon ide analyze .
+pub fn build_report(...) -> Report  // usage: 2 (1 in test), in exports.mbt
+pub fn never_called_pub() -> String // usage: 0 (0 in test), in exports.mbt
+
+# Analyze with glob pattern
+$ moon ide analyze internal/*
+```
+
 ## `moon doc` for API Discovery
 
 **CRITICAL**: `moon doc '<query>'` is the primary tool for API discovery. Faster and more accurate than grep.
