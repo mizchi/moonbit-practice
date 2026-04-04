@@ -221,6 +221,76 @@ Common ones:
 
 Check all: `moonc build-package -warn-help`
 
+## Workspace (moon.work)
+
+Multiple modules can share a single build context via a workspace.
+
+### Workflow
+
+```bash
+# 1. Create modules
+moon new --user myuser mod1
+moon new --user myuser mod2
+
+# 2. Initialize workspace (creates moon.work)
+moon work init
+
+# 3. Add modules to workspace
+moon work use mod1 mod2
+```
+
+This generates `moon.work`:
+
+```
+members = [
+  "./mod1",
+  "./mod2",
+]
+```
+
+### Cross-module imports
+
+Add a path dependency in the consumer's `moon.mod.json`:
+
+```json
+{
+  "deps": {
+    "myuser/mod2": { "path": "../mod2" }
+  }
+}
+```
+
+Then import in `moon.pkg`:
+
+```moonbit
+import {
+  "myuser/mod2" @mod2,
+}
+```
+
+Use in code:
+
+```moonbit
+///|
+fn main {
+  println(@mod2.hello())
+}
+```
+
+Run with:
+
+```bash
+moon run mod1/cmd/main
+```
+
+### Workspace commands
+
+| Command | Description |
+|---------|-------------|
+| `moon work init` | Create `moon.work` manifest |
+| `moon work use <dirs>` | Add modules to workspace |
+| `moon work sync` | Sync dependency versions across members |
+
 ## References
 
 - Module: https://docs.moonbitlang.com/en/stable/toolchain/moon/module
