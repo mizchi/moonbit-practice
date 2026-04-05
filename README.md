@@ -26,6 +26,7 @@ claude plugin install moonbit-practice@moonbit-practice
 - **testing.md**: Doc tests, snapshot tests, benchmarks, and QuickCheck
 - **performance.md**: View types (StringView, ArrayView, BytesView) for zero-copy operations
 - **stdlib.md**: MoonBit standard library (moonbitlang/core) usage
+- **nix.md**: Nix flake development with moonbit-overlay (devShell, package build, C FFI deps)
 
 ## Directory Structure
 
@@ -45,6 +46,7 @@ moonbit-practice/
 │       │   ├── performance.md
 │       │   ├── refactor.md
 │       │   ├── stdlib.md
+│       │   ├── nix.md
 │       │   └── testing.md
 │       └── assets/
 │           └── ci.yaml
