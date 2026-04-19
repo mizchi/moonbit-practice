@@ -291,10 +291,27 @@ parse(s) catch {
 }
 ```
 
+## CI and Publishing
+
+### Third-party actions
+
+Prefer the **official curl installer** (`assets/ci.yaml`) or **Nix with moonbit-overlay** (`assets/ci-nix.yaml`) over third-party actions such as `hustcer/setup-moonbit@v1`. The installer is short and adds nothing to the action supply chain; the Nix path is fully reproducible when a `flake.nix` is present.
+
+### `moon update` is mandatory
+
+Runners start with an empty registry index. Any registry-hosted MoonBit dependency makes `moon check` / `moon test` / `moon build` fail with `Failed to resolve registry dependency` until you run `moon update`. Put it immediately after installing the CLI in every workflow that touches mooncakes.
+
+### Publishing an npm package whose build depends on MoonBit
+
+Some projects (e.g. Vite plugins, language tooling) ship as npm packages but run `moon` inside `pnpm build` — for instance `pnpm build:parser` that calls `moon -C tools/parser build --release --target js`. In that case the npm publish workflow needs both the MoonBit CLI and `moon update` **before** `pnpm build`, otherwise the build fails on CI.
+
+See `assets/publish-to-npm.yaml` for a minimal release-triggered publish workflow that uses OIDC Trusted Publishing (no `NPM_TOKEN`) and sets up MoonBit correctly. Pair it with a release automation tool (see the `npm-release` skill for a release-please + OIDC setup) to avoid manual `npm publish` calls.
+
 ## Assets
 
-- assets/ci.yaml - GitHub Actions workflow for CI (curl installer)
-- assets/ci-nix.yaml - GitHub Actions workflow for CI with Nix (moonbit-overlay)
+- `assets/ci.yaml` — GitHub Actions CI (curl installer)
+- `assets/ci-nix.yaml` — GitHub Actions CI with Nix (moonbit-overlay)
+- `assets/publish-to-npm.yaml` — release-triggered npm publish with MoonBit build and OIDC Trusted Publishing
 
 ### Nix Setup (moonbit-overlay)
 
