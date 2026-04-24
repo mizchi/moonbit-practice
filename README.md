@@ -1,58 +1,25 @@
-# MoonBit Practice Plugin
+# moonbit-practice — moved
 
-A Claude Code plugin providing best practices for MoonBit code generation.
+This skill has been merged into the unified [`mizchi/skills`](https://github.com/mizchi/skills) repository.
 
-## Installation
+## New location
 
-```bash
-claude plugin marketplace add mizchi/moonbit-practice
-claude plugin install moonbit-practice@moonbit-practice
+[`mizchi/skills/moonbit-practice`](https://github.com/mizchi/skills/tree/main/moonbit-practice)
+
+## Install
+
+```sh
+apm install -g mizchi/skills/moonbit-practice
 ```
 
-## Usage
+Or add to a project's `apm.yml`:
 
-```bash
-/moonbit-practice
+```yaml
+dependencies:
+  apm:
+    - mizchi/skills/moonbit-practice
 ```
 
-## Included References
+If you previously referenced `mizchi/moonbit-practice/skills/moonbit-practice` in your `apm.yml`, update it to `mizchi/skills/moonbit-practice`.
 
-- **ide.md**: Code navigation with `moon ide`
-- **ffi.md**: MoonBit FFI reference
-- **ffi-native.md**: Native C FFI patterns and ownership annotations
-- **refactor.md**: Refactoring patterns
-- **configuration.md**: moon.mod.json / moon.pkg configuration
-- **language.md**: Language features (types, traits, pattern matching, access control)
-- **testing.md**: Doc tests, snapshot tests, benchmarks, and QuickCheck
-- **performance.md**: View types (StringView, ArrayView, BytesView) for zero-copy operations
-- **stdlib.md**: MoonBit standard library (moonbitlang/core) usage
-- **nix.md**: Nix flake development with moonbit-overlay (devShell, package build, C FFI deps)
-
-## Directory Structure
-
-```
-moonbit-practice/
-├── .claude-plugin/
-│   └── marketplace.json
-├── skills/
-│   └── moonbit-practice/
-│       ├── SKILL.md
-│       ├── reference/
-│       │   ├── configuration.md
-│       │   ├── ffi.md
-│       │   ├── ffi-native.md
-│       │   ├── language.md
-│       │   ├── ide.md
-│       │   ├── performance.md
-│       │   ├── refactor.md
-│       │   ├── stdlib.md
-│       │   ├── nix.md
-│       │   └── testing.md
-│       └── assets/
-│           └── ci.yaml
-└── README.md
-```
-
-## License
-
-MIT
+This repository is kept for historical reference and is archived.
